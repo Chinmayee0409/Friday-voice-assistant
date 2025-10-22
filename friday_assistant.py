@@ -57,11 +57,11 @@ def get_weather():
 def greet_user():
     hour = datetime.datetime.now().hour
     if hour < 12:
-        speak("Good morning, Saketh!")
+        speak("Good morning")
     elif hour < 18:
-        speak("Good afternoon, Saketh!")
+        speak("Good afternoon")
     else:
-        speak("Good evening, Saketh!")
+        speak("Good evening")
     speak("I am Friday, your AI assistant. How can I help you?")
 
 # -----------------------------
@@ -101,7 +101,7 @@ def process_command(command):
         os.system("control")
 
     elif "exit" in command or "stop" in command or "quit" in command:
-        speak("Goodbye, Saketh. Have a wonderful day!")
+        speak("Goodbye Have a wonderful day!")
         exit()
 
     else:
@@ -119,3 +119,4 @@ def main():
 # -----------------------------
 if __name__ == "__main__":
     main()
+
