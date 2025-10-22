@@ -6,22 +6,18 @@ import os
 import requests
 import geocoder
 
-# -----------------------------
-# 🔹 Initialize Text-to-Speech Engine
-engine = pyttsx3.init()
-engine.setProperty('rate', 155)  # Speed of speech
-voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[1].id if len(voices) > 1 else voices[0].id)  # Female voice
 
-# -----------------------------
-# 🔹 Speak Function (Voice + Text)
+engine = pyttsx3.init('sapi5') 
+voices = engine.getProperty('voices')
+engine.setProperty('voice', voices[1].id if len(voices) > 1 else voices[0].id)  # female if available
+engine.setProperty('rate', 160)  
+
 def speak(text):
+    
     print(f"FRIDAY 🎙️: {text}")
     engine.say(text)
     engine.runAndWait()
 
-# -----------------------------
-# 🔹 Listen for User Voice Input
 def take_command():
     r = sr.Recognizer()
     with sr.Microphone() as source:
@@ -40,8 +36,7 @@ def take_command():
         speak("Sorry, my speech service is not available right now.")
         return ""
 
-# -----------------------------
-# 🔹 Weather Fetch
+
 def get_weather():
     g = geocoder.ip('me')
     city = g.city or "your location"
@@ -52,8 +47,7 @@ def get_weather():
     except:
         return "Sorry, I cannot fetch the weather right now."
 
-# -----------------------------
-# 🔹 Greeting
+
 def greet_user():
     hour = datetime.datetime.now().hour
     if hour < 12:
@@ -62,10 +56,9 @@ def greet_user():
         speak("Good afternoon")
     else:
         speak("Good evening")
-    speak("I am Friday, your AI assistant. How can I help you?")
+    speak("I am Friday, your voice assistant. How can I help you?")
 
-# -----------------------------
-# 🔹 Process Commands
+
 def process_command(command):
     if "time" in command:
         time_now = datetime.datetime.now().strftime("%I:%M %p")
@@ -87,28 +80,27 @@ def process_command(command):
     elif "open chrome" in command:
         chrome_path = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
         if os.path.exists(chrome_path):
-            speak("Opening Google Chrome")
+            speak("Opening Google Chrome.")
             os.startfile(chrome_path)
         else:
             speak("Chrome not found on this system.")
 
     elif "open prime video" in command:
-        speak("Opening Amazon Prime Video")
+        speak("Opening Amazon Prime Video.")
         webbrowser.open("https://www.primevideo.com")
 
     elif "open control panel" in command:
-        speak("Opening Control Panel")
+        speak("Opening Control Panel.")
         os.system("control")
 
     elif "exit" in command or "stop" in command or "quit" in command:
-        speak("Goodbye Have a wonderful day!")
+        speak("Goodbye, Have a wonderful day!")
         exit()
 
     else:
-        speak("Sorry, I can only handle basic commands like time, date, weather, location, Chrome, Prime Video, and Control Panel right now.")
+        speak("Sorry, I can only handle basic commands right now.")
 
-# -----------------------------
-# 🔹 Main Loop
+
 def main():
     greet_user()
     while True:
@@ -116,7 +108,5 @@ def main():
         if command:
             process_command(command)
 
-# -----------------------------
 if __name__ == "__main__":
     main()
-
