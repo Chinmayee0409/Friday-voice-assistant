@@ -7,16 +7,17 @@ import requests
 import geocoder
 
 
-engine = pyttsx3.init('sapi5') 
+# Initialize text-to-speech engine
+engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[1].id if len(voices) > 1 else voices[0].id)  # female if available
-engine.setProperty('rate', 160)  
+engine.setProperty('rate', 160)
 
 def speak(text):
-    
     print(f"FRIDAY 🎙️: {text}")
     engine.say(text)
     engine.runAndWait()
+
 
 def take_command():
     r = sr.Recognizer()
@@ -37,15 +38,17 @@ def take_command():
         return ""
 
 
-def get_weather():
-    g = geocoder.ip('me')
-    city = g.city or "your location"
+def get_weather(city=None):
+    """Fetch weather for a given city, or current location if none provided."""
+    if not city:
+        g = geocoder.ip('me')
+        city = g.city or "your location"
     try:
         url = f"https://wttr.in/{city}?format=%C+%t"
         weather = requests.get(url).text
         return f"The weather in {city} is {weather}."
     except:
-        return "Sorry, I cannot fetch the weather right now."
+        return f"Sorry, I cannot fetch the weather for {city} right now."
 
 
 def greet_user():
@@ -69,7 +72,15 @@ def process_command(command):
         speak(f"Today is {date_today}")
 
     elif "weather" in command:
-        speak(get_weather())
+        # Detect if the user mentioned a city (e.g., "weather in Chennai")
+        words = command.split()
+        city = None
+        if "in" in words:
+            city_index = words.index("in") + 1
+            if city_index < len(words):
+                city = " ".join(words[city_index:])  # Take words after "in" as city name
+
+        speak(get_weather(city))
 
     elif "location" in command:
         g = geocoder.ip('me')
@@ -107,6 +118,7 @@ def main():
         command = take_command()
         if command:
             process_command(command)
+
 
 if __name__ == "__main__":
     main()
